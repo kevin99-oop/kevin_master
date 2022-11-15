@@ -1,0 +1,13 @@
+asgiref
+#backports.zoneinfo
+certifi
+charset-normalizer
+Django
+idna
+requests
+sqlparse
+urllib3
+websocket-client
+docker
+boto3
+botocore

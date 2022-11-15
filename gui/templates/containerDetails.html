@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home{% endblock %}
+
+
+{% block content %}
+<style>
+.table{
+margin-top:5%;
+}
+.table-dark{
+    background-color: #08164d;
+
+}
+</style>
+    <div>
+        {% if msg %}
+        
+            <p>   
+            {{ msg }}
+            </p>
+
+        {% endif %}
+
+    </div>
+
+<!-- {% for service in services %}
+    {%  for key,value in service.items %}
+       <p> {{key}} : {{value}} </p>
+    {% endfor %}    
+{% endfor %} -->
+{% if not is_bill_pending %}
+    <h1> Please Pay Bill First </h1>
+{% endif %}
+
+{% if user.is_authenticated  and is_bill_pending %}
+
+
+    {% if cobjs %}
+        <div class="container">
+        <table border="2" class=" table"> 
+            <thead class="table-dark text-center">
+            <tr>
+                <td scope="col">ID</td>
+                <td scope="col">Name</td>
+                <td scope="col">Port Mapping </td>
+                <td scope="col">IPAddress</td>
+                <td scope="col">Link</td>
+                <td scope="col">Remove</td>
+                {% if services %}
+                    <td> Replicas </td>
+                    <td> Scale </td>
+                {% endif %}
+                
+            </tr>
+            </thead>
+            {% for c in cobjs %}
+                <tr class="text-center">
+                    <td>{{c.0}}</td>
+                    <td>{{c.1}}</td>
+                    <td> {{c.3}}  : {{ c.6 }}</td>
+                    <td>{{c.4}}</td>    
+                    <td> 
+                        
+                          
+                                <a href="http://{{public_ip}}:{{ c.3 }}" class="btn btn-primary rounded" target="_blank"> ssh </a>
+                                <a href="http://{{public_ip}}:{{ port1 }}" class="btn btn-primary rounded" target="_blank"> Client </a>
+                                <a href="http://{{public_ip}}:{{ port2 }}" class="btn btn-primary rounded" target="_blank"> WAF </a>
+                          
+                    </td>
+                    {% if services %}
+                        <td> <a href="/{{ c.2 }}/serviceRemove"> <b>  Remove  </b> </a> </td>
+                    {%else%}
+                        <td> <a href="/{{ c.2 }}/containerRemove" class="btn btn-primary rounded" > <b>  Remove  </b> </a> </td>
+                    {%endif%}
+                    {% if services %}
+                        <td>
+                            <form method="POST" action="serviceScale">
+                                {% csrf_token %}
+                            <input type="hidden" value="{{c.0}}"  name="service_id">        
+                            <input type="text" value={{c.7}} name="scale"> 
+                        </td>
+                        <td>
+                            <input type="submit" name="login" value="Scale">
+                        </form>
+                        </td>
+                    {% endif %}
+                    
+                   
+                    
+                </tr>
+            {% endfor %}    
+        </table>
+        </div>
+    {% endif %}
+
+
+    </br>
+</br>
+
+{% endif %}
+
+{% endblock %}
